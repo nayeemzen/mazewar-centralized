@@ -13,10 +13,11 @@ public class MazewarPacket implements Serializable {
 	public static final int SYNC_PROJECTILE_MOVEMENT = 200;
 	
 	/* Events */
-	public static final int REGISTER 			 = 300;
-	public static final int WAIT_FOR_PLAYER_JOIN = 301;
-	public static final int ERROR				 = 302;
-	public static final int QUIT	 			 = 303;
+	public static final int REGISTER	= 300;
+	public static final int WAIT 		= 301;
+	public static final int RESUME		= 302;
+	public static final int ERROR		= 303;
+	public static final int QUIT	 	= 304;
 	
 	/* Error codes */
 	public static final int ERROR_TIMEOUT 			  	 = -100;

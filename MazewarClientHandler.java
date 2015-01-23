@@ -19,6 +19,7 @@ public class MazewarClientHandler implements Runnable {
 		this.connectedClients = connectedClients;
 		this.eventQueue = eventQueue;
 		
+		clientName = null;
 		readStream = new ObjectInputStream(clientSocket.getInputStream());
 		writeStream = new ObjectOutputStream(clientSocket.getOutputStream());
 		
@@ -26,7 +27,7 @@ public class MazewarClientHandler implements Runnable {
 	}
 	
 	/* Client request handler */
-	public void handleReceivedPacket(MazewarPacket packetFromClient) {
+	public void handleReceivedPacket(MazewarPacket packetFromClient) throws IOException {
 		assert packetFromClient != null;
 		
 		if (packetFromClient.eventType == MazewarPacket.REGISTER) {
@@ -40,13 +41,22 @@ public class MazewarClientHandler implements Runnable {
 			}
 		}
 		
-		/* @TODO(Zen): Wait for (at least) 2 clients to connect */
-		if (connectedClients.size() < 2) {
-			
-		}
+		/* Construct packet */		
+		MazewarPacket packetToClient = new MazewarPacket();
+		packetToClient.clientName = clientName;
+		packetToClient.errorCode = 0;
 		
-		/* Enqueue packet */		
-		eventQueue.add(packetFromClient);
+		/* If less than 2 connected players, wait for (at least) another player to join */
+		if (connectedClients.size() < 2) {
+			packetToClient.eventType = MazewarPacket.WAIT;
+			synchronized(writeStream) {
+				writeStream.writeObject(packetToClient);
+			}
+		} else {
+			packetToClient.eventType = packetFromClient.eventType;
+			/* Enqueue packet for the EventQueueListener to broadcast */
+			eventQueue.add(packetToClient);
+		}
 	}
 	
 	private void handleError(int errorCode) {
