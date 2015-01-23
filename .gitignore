@@ -24,3 +24,4 @@
 /MazewarServer.class
 /MazewarPacket$action.class
 /MazewarPacket$Action.class
+/EventQueueListener.class

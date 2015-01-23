@@ -14,11 +14,17 @@ public class MazewarServer {
 	MazewarServer(int port) throws IOException {
 		serverSocket = new ServerSocket(port);
 		eventQueue = new LinkedBlockingQueue <MazewarPacket>();
+		connectedClients = new ConcurrentHashMap <String, ObjectOutputStream>();
 	}
 	
 	/* Start server */
 	public void run () throws IOException {
 		assert serverSocket != null;
+		
+		/* Spawn thread for listening to changes in the event queue */
+		(new Thread (new EventQueueListener(eventQueue, connectedClients))).start();
+		
+		/* Indefinitely accept new clients */
 		while(true) {
 			Socket clientSocket = null;
 			try {
@@ -28,12 +34,8 @@ public class MazewarServer {
 				e.printStackTrace();
 			}
 			
-			/* Spawn thread for handling new client connection */
-			(new Thread (new MazewarClientHandler(clientSocket))).start();
-			
-			while(true) {
-				// @TODO(Zen): Dequeue and broadcast events, block if queue is empty
-			}
+			/* Spawn thread for handling the new client connection */
+			(new Thread (new MazewarClientHandler(clientSocket, connectedClients, eventQueue))).start();
 		}
 	}
 	
