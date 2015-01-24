@@ -29,6 +29,8 @@ USA.
 
 
 public abstract class LocalClient extends Client {
+	
+		protected MazewarClient client = null;
 
         /** 
          * Create a {@link Client} local to this machine.
@@ -38,8 +40,71 @@ public abstract class LocalClient extends Client {
                 super(name);
                 assert(name != null);
         }
-
+        
+        public void registerMazewarClient(MazewarClient client) {
+        	assert(client != null);
+            assert(this.client == null);
+            this.client = client;
+        }
+        
         /**
-         * Fill in here??
+         * Move the client forward.
+         * @return <code>true</code> if move was successful, otherwise <code>false</code>.
          */
+        protected boolean forward() {
+        	if (client == null) {
+        		return super.forward();
+        	} else {
+        		return client.sendEvent(this, ClientEvent.moveForward);
+        	}
+        }
+        
+        /**
+         * Move the client backward.
+         * @return <code>true</code> if move was successful, otherwise <code>false</code>.
+         */
+        protected boolean backup() {
+        	if (client == null) {
+        		return super.backup();
+        	} else {
+        		return client.sendEvent(this, ClientEvent.moveBackward);
+        	}    
+        }
+        
+        /**
+         * Turn the client ninety degrees counter-clockwise.
+         */
+        protected void turnLeft() {
+        	if (client == null) {
+        		super.turnLeft();
+        	} else {
+        		client.sendEvent(this, ClientEvent.turnLeft);
+        	}
+        }
+        
+        /**
+         * Turn the client ninety degrees clockwise.
+         */
+        protected void turnRight() {
+        	if (client == null) {
+        		super.turnRight();
+        	} else {
+        		client.sendEvent(this, ClientEvent.turnRight);
+        	}
+        }
+        
+        /**
+         * Fire a projectile.
+         * @return <code>true</code> if a projectile was successfully launched, otherwise <code>false</code>.
+         */
+        protected boolean fire() {
+        	if (client == null) {
+        		return super.fire();
+        	} else if (maze.clientFire(this)) {
+        		return client.sendEvent(this, ClientEvent.fire);
+        	}
+        	
+        	return false;
+        }
 }
+

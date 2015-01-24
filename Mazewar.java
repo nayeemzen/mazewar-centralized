@@ -80,6 +80,15 @@ public class Mazewar extends JFrame {
          * the static consolePrint methods  
          */
         private static final JTextPane console = new JTextPane();
+        
+        /**
+         * Multiplayer related attributes
+         */
+        private static boolean isMultiplayer = false;
+        private static String hostname;
+        private static int port;
+        private static MazewarClient client;
+        
       
         /** 
          * Write a message to the console followed by a newline.
@@ -147,15 +156,20 @@ public class Mazewar extends JFrame {
                 maze.addClient(guiClient);
                 this.addKeyListener(guiClient);
                 
-                // Use braces to force constructors not to be called at the beginning of the
-                // constructor.
-                {
+                if (isMultiplayer) {
+                	client = new MazewarClient();
+            		client.connect(hostname, port);
+            		guiClient.registerMazewarClient(client);
+                } else {
+                	// Use braces to force constructors not to be called at the beginning of the
+                    // constructor.
+                	{
                         maze.addClient(new RobotClient("Norby"));
                         maze.addClient(new RobotClient("Robbie"));
                         maze.addClient(new RobotClient("Clango"));
                         maze.addClient(new RobotClient("Marvin"));
+                	}
                 }
-
                 
                 // Create the panel that will display the maze.
                 overheadPanel = new OverheadMazePanel(maze, guiClient);
@@ -222,8 +236,14 @@ public class Mazewar extends JFrame {
          * @param args Command-line arguments.
          */
         public static void main(String args[]) {
-
-                /* Create the GUI */
-                new Mazewar();
+        	// TODO find better way to parse arguments
+        	if (args.length == 2) {
+        		isMultiplayer = true;
+        		hostname = args[0];
+        		port = Integer.parseInt(args[1]);
+        	}
+        	
+            /* Create the GUI */
+            new Mazewar();
         }
 }
