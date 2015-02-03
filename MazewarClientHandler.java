@@ -60,6 +60,7 @@ public class MazewarClientHandler implements Runnable {
 	}
 	
 	private void handleError(int errorCode) {
+		System.err.println("Error: " + errorCode);
 		MazewarPacket packet = new MazewarPacket();
 		packet.clientName = clientName;
 		packet.eventType = MazewarPacket.ERROR;
