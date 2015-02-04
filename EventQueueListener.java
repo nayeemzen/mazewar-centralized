@@ -45,7 +45,9 @@ public class EventQueueListener implements Runnable {
 				if (connectedClients.size() < MIN_CLIENTS) 
 					continue;
 				broadcast(eventQueue.take());
-			} catch (InterruptedException | IOException e) {
+			} catch (InterruptedException e){
+				e.printStackTrace();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
