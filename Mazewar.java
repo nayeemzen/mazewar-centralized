@@ -182,7 +182,7 @@ public class Mazewar extends JFrame {
         			// spawn new event producer thread (enqueue packets from server)
         			(new Thread (new MazewarClientEventProducer(inStream, eventQueue))).start();
         			// spawn new event consumer thread (dequeue packets onto GUIClient)
-        			(new Thread (new MazewarClientEventConsumer(guiClient, this, maze, eventQueue))).start();
+        			(new Thread (new MazewarClientEventConsumer(guiClient, maze, eventQueue))).start();
         			
                 } else {
                 	// Use braces to force constructors not to be called at the beginning of the

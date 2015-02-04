@@ -7,15 +7,13 @@ public class MazewarClientEventConsumer implements Runnable {
 	private boolean isPlayable;
 	private GUIClient guiClient;
 	private LinkedBlockingQueue <MazewarPacket> eventQueue;
-	private Mazewar maze;
-	private Maze mazeImpl;
+	private Maze maze;
 	
 	public MazewarClientEventConsumer(GUIClient guiClient,
-			Mazewar maze, Maze mazeImpl, LinkedBlockingQueue eventQueue) {
+			Maze maze, LinkedBlockingQueue eventQueue) {
 		this.guiClient = guiClient;
 		this.eventQueue = eventQueue;
 		this.maze = maze;
-		this.mazeImpl = mazeImpl;
 		guiClient.isPlayable = false;
 	}
 	
@@ -25,11 +23,10 @@ public class MazewarClientEventConsumer implements Runnable {
 		// TODO(Zen): Improve isPlayable logic
 		if (mazewarPacket.eventType == MazewarPacket.RESUME) {
 			guiClient.isPlayable = true;
-			// Spawn new GUIClient for opponents (ignore self)
+			// Spawn new RemoteClient for opponents (ignore self)
 			if(!mazewarPacket.clientName.equals(guiClient.getName())) {
-				GUIClient opponent = new GUIClient(mazewarPacket.clientName);
-	            mazeImpl.addClient(opponent);
-	            maze.addKeyListener(opponent);
+				RemoteClient opponent = new RemoteClient(mazewarPacket.clientName);
+	            maze.addClient(opponent);
 			}
 			
 			return;
