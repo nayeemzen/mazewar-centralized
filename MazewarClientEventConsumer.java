@@ -4,16 +4,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class MazewarClientEventConsumer implements Runnable {
 	
-	private boolean isPlayable;
 	private GUIClient guiClient;
 	private LinkedBlockingQueue <MazewarPacket> eventQueue;
 	private Maze maze;
+	private RemoteClient remoteClient;
 	
 	public MazewarClientEventConsumer(GUIClient guiClient,
 			Maze maze, LinkedBlockingQueue eventQueue) {
 		this.guiClient = guiClient;
 		this.eventQueue = eventQueue;
 		this.maze = maze;
+		remoteClient = null;
 		guiClient.isPlayable = false;
 	}
 	
@@ -25,8 +26,8 @@ public class MazewarClientEventConsumer implements Runnable {
 			guiClient.isPlayable = true;
 			// Spawn new RemoteClient for opponents (ignore self)
 			if(!mazewarPacket.clientName.equals(guiClient.getName())) {
-				RemoteClient opponent = new RemoteClient(mazewarPacket.clientName);
-	            maze.addClient(opponent);
+				remoteClient = new RemoteClient(mazewarPacket.clientName);
+	            maze.addClient(remoteClient);
 			}
 			
 			return;
@@ -34,18 +35,33 @@ public class MazewarClientEventConsumer implements Runnable {
 		
 		if(!guiClient.isPlayable) return;
 		
+		assert(remoteClient != null);
+		boolean isLocalClient = mazewarPacket.clientName.equals(guiClient.getName());
+		
 		switch(mazewarPacket.eventType) {
 		case MazewarPacket.ACTION_MOVE_DOWN:
-			guiClient.backup();
+			if(isLocalClient)
+				guiClient.backup();
+			else
+				remoteClient.backup();
 			break;
 		case MazewarPacket.ACTION_MOVE_UP:
-			guiClient.forward();
+			if(isLocalClient)
+				guiClient.forward();
+			else
+				remoteClient.forward();
 			break;
 		case MazewarPacket.ACTION_TURN_LEFT:
-			guiClient.turnLeft();
+			if(isLocalClient)
+				guiClient.turnLeft();
+			else
+				remoteClient.turnLeft();
 			break;
 		case MazewarPacket.ACTION_TURN_RIGHT:
-			guiClient.turnRight();
+			if(isLocalClient)
+				guiClient.turnRight();
+			else
+				remoteClient.turnRight();
 			break;
 		default:
 			System.err.println("Undefined event!");

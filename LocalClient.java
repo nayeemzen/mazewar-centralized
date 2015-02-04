@@ -55,9 +55,9 @@ public abstract class LocalClient extends Client {
         protected boolean forward() {
         	if (isPlayable) {
         		return super.forward();
-        	} else {
-        		return client.sendEvent(this, ClientEvent.moveForward);
         	}
+        	
+        	return false;
         }
         
         /**
@@ -67,37 +67,31 @@ public abstract class LocalClient extends Client {
         protected boolean backup() {
         	if (isPlayable) {
         		return super.backup();
-        	} else {
-        		return client.sendEvent(this, ClientEvent.moveBackward);
-        	}    
+        	} 
+        	
+        	return false;
         }
         
         /**
          * Turn the client ninety degrees counter-clockwise.
          */
         protected void turnLeft() {
-        	if (isPlayable) {
-        		super.turnLeft();
-        	} else {
-        		client.sendEvent(this, ClientEvent.turnLeft);
-        	}
+        	super.turnLeft();
         }
         
         /**
          * Turn the client ninety degrees clockwise.
          */
         protected void turnRight() {
-        	if (isPlayable) {
-        		super.turnRight();
-        	} else {
-        		client.sendEvent(this, ClientEvent.turnRight);
-        	}
+        	super.turnRight();
         }
         
         /**
          * Fire a projectile.
          * @return <code>true</code> if a projectile was successfully launched, otherwise <code>false</code>.
          */
+        
+        // TODO(Zen): Fix firing
         protected boolean fire() {
         	if (isPlayable) {
         		return super.fire();
