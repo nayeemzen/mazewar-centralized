@@ -84,7 +84,6 @@ public class OverheadMazePanel extends JPanel implements MazeListener {
          */
         public OverheadMazePanel(Maze maze, Client client) {
                 assert(maze != null);
-                assert(client != null);
                 this.maze = maze;
                 this.client = client;
                 setBackground(Color.white);

@@ -163,7 +163,6 @@ public class Mazewar extends JFrame {
                 
                 // Create the GUIClient and connect it to the KeyListener queue
                 guiClient = new GUIClient(name);
-                maze.addClient(guiClient);
                 this.addKeyListener(guiClient);
                 
                 if (isMultiplayer) {
@@ -195,6 +194,14 @@ public class Mazewar extends JFrame {
                 	}
                 }
                 
+                synchronized(maze) {
+                	 try {
+     					maze.wait();
+     				} catch (InterruptedException e) {
+     					e.printStackTrace();
+     				}
+                }
+               
                 // Create the panel that will display the maze.
                 overheadPanel = new OverheadMazePanel(maze, guiClient);
                 assert(overheadPanel != null);

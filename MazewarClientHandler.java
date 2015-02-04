@@ -55,6 +55,8 @@ public class MazewarClientHandler implements Runnable {
 		MazewarPacket packetToClient = new MazewarPacket();
 		packetToClient.clientName = clientName;
 		packetToClient.errorCode = 0;
+		packetToClient.coord_x = packetFromClient.coord_x;
+		packetToClient.coord_y = packetFromClient.coord_y;
 		
 		if (packetFromClient.eventType == MazewarPacket.REGISTER) {
 			packetToClient.eventType = MazewarPacket.BEGIN;

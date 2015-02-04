@@ -52,6 +52,7 @@ public class MazewarClient {
 			outStream.writeObject(payload);
 		} catch (IOException e) {
 			/* TODO how do we handle this? */
+			e.printStackTrace();
 			return false;
 		}
 			

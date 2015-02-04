@@ -18,6 +18,11 @@ public class MazewarPacket implements Serializable {
 	public static final int ERROR		= 302;
 	public static final int QUIT	 	= 303;
 	
+    private static final int DIRECTION_NORTH  = 0;
+    private static final int DIRECTION_EAST  = 1;
+    private static final int DIRECTION_SOUTH = 2;
+    private static final int DIRECTION_WEST  = 3;
+	
 	/* Error codes */
 	public static final int ERROR_TIMEOUT 			  	 = -100;
 	public static final int ERROR_CLIENT_ALREADY_EXISTS  = -101;
@@ -30,7 +35,8 @@ public class MazewarPacket implements Serializable {
 	/* Client information variables */
 	public String clientName;
 	public int score;
-	// TODO(Zen): This is not serializable!
-	public Point coordinates;
+	public int coord_x;
+	public int coord_y;
+	public int direction;
 	
 }
