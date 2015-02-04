@@ -19,10 +19,10 @@ public class MazewarClientEventConsumer implements Runnable {
 	}
 	
 	private void execute(MazewarPacket mazewarPacket) {
-		System.out.println("Consuming event: " + mazewarPacket);
+		System.out.println("Consuming event: " + mazewarPacket.eventType + " From: " + mazewarPacket.clientName);
 		
 		// TODO(Zen): Improve isPlayable logic
-		if (mazewarPacket.eventType == MazewarPacket.RESUME) {
+		if (mazewarPacket.eventType == MazewarPacket.BEGIN) {
 			guiClient.isPlayable = true;
 			// Spawn new RemoteClient for opponents (ignore self)
 			if(!mazewarPacket.clientName.equals(guiClient.getName())) {
@@ -38,6 +38,7 @@ public class MazewarClientEventConsumer implements Runnable {
 		assert(remoteClient != null);
 		boolean isLocalClient = mazewarPacket.clientName.equals(guiClient.getName());
 		
+		// TODO(Zen): Add firing events
 		switch(mazewarPacket.eventType) {
 		case MazewarPacket.ACTION_MOVE_DOWN:
 			if(isLocalClient)

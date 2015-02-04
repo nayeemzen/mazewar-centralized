@@ -11,6 +11,7 @@ public class EventQueueListener implements Runnable {
 	private LinkedBlockingQueue <MazewarPacket> eventQueue;
 	private ConcurrentHashMap <String, ObjectOutputStream> connectedClients;
 	private AtomicInteger sequenceNumber;
+	private final int MIN_CLIENTS = 2;
 	
 	EventQueueListener(LinkedBlockingQueue eventQueue, ConcurrentHashMap connectedClients) {
 		assert (eventQueue != null) && (connectedClients != null);
@@ -41,6 +42,8 @@ public class EventQueueListener implements Runnable {
 		while(true) {
 			try {
 				/* eventQueue.take() blocks if queue is empty */
+				if (connectedClients.size() < MIN_CLIENTS) 
+					continue;
 				broadcast(eventQueue.take());
 			} catch (InterruptedException | IOException e) {
 				e.printStackTrace();

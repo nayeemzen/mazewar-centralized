@@ -14,10 +14,9 @@ public class MazewarPacket implements Serializable {
 	
 	/* Events */
 	public static final int REGISTER	= 300;
-	public static final int WAIT 		= 301;
-	public static final int RESUME		= 302;
-	public static final int ERROR		= 303;
-	public static final int QUIT	 	= 304;
+	public static final int BEGIN		= 301;
+	public static final int ERROR		= 302;
+	public static final int QUIT	 	= 303;
 	
 	/* Error codes */
 	public static final int ERROR_TIMEOUT 			  	 = -100;
@@ -31,6 +30,7 @@ public class MazewarPacket implements Serializable {
 	/* Client information variables */
 	public String clientName;
 	public int score;
+	// TODO(Zen): This is not serializable!
 	public Point coordinates;
 	
 }
