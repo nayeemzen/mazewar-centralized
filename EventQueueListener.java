@@ -22,6 +22,9 @@ public class EventQueueListener implements Runnable {
 	public void broadcast(MazewarPacket packet) throws IOException {
 		 /* Tag packet with sequence number */
 		packet.sequenceNumber = sequenceNumber.incrementAndGet();
+		System.out.println("dequeing: " + packet.eventType + ", "
+				+ "sequence num: " + packet.sequenceNumber 
+				+ "from: " + packet.clientName);
 		
 		/* Iterate through HashMap of connected clients and broadcast to each */
 		for(ObjectOutputStream writeStream : connectedClients.values()) {

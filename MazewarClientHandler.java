@@ -30,9 +30,11 @@ public class MazewarClientHandler implements Runnable {
 	public void handleReceivedPacket(MazewarPacket packetFromClient) throws IOException {
 		assert packetFromClient != null;
 		
+		System.out.println("Handling Received Packet");
 		if (packetFromClient.eventType == MazewarPacket.REGISTER) {
+			System.out.println("REGISTERING");
 			/* Check if client is already registered */
-			if (connectedClients.containsKey(clientName)) {
+			if (connectedClients.containsKey(packetFromClient.clientName)) {
 				handleError(MazewarPacket.ERROR_CLIENT_ALREADY_EXISTS);
 				return;
 			} else {
@@ -41,21 +43,43 @@ public class MazewarClientHandler implements Runnable {
 			}
 		}
 		
-		/* Construct packet */		
+		assert(connectedClients.containsKey(packetFromClient.clientName));
+		/* construct packet */
 		MazewarPacket packetToClient = new MazewarPacket();
 		packetToClient.clientName = clientName;
 		packetToClient.errorCode = 0;
 		
 		/* If less than 2 connected players, wait for (at least) another player to join */
 		if (connectedClients.size() < 2) {
+			
+			System.out.println("waiting for player join");
 			packetToClient.eventType = MazewarPacket.WAIT;
 			synchronized(writeStream) {
 				writeStream.writeObject(packetToClient);
 			}
-		} else {
+			
+		} else if (packetFromClient.eventType == MazewarPacket.REGISTER) {
+			
+			/* Notify clients of each other's presence */
+			for (String client : connectedClients.keySet()) {
+				/* Re-declaring MazewarPacket inside as ObjectOutputStream caches
+				 * packets with the same heap address
+				 */
+				MazewarPacket packet = new MazewarPacket();
+				packet.clientName = client;
+				packet.errorCode = 0;
+				packet.eventType = MazewarPacket.RESUME;
+				
+				eventQueue.add(packet);
+			}
+			
+		} else {		
+			
 			packetToClient.eventType = packetFromClient.eventType;
+			System.out.println("enqueing: " + packetToClient.eventType);
 			/* Enqueue packet for the EventQueueListener to broadcast */
 			eventQueue.add(packetToClient);
+			
 		}
 	}
 	

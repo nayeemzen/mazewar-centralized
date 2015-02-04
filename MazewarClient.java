@@ -3,16 +3,20 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-
 public class MazewarClient {
 	
 	private Socket socket;
-	private ObjectOutputStream out = null;
+	private ObjectOutputStream outStream;
 	
-	public void connect(String hostname, int port) {
+	MazewarClient() {
+		socket = null;
+		outStream = null;
+	}
+	
+	public Socket connect(String hostname, int port) {
 		try {
-			socket = new Socket(hostname, port); 
-			out = new ObjectOutputStream(socket.getOutputStream());
+			socket = new Socket(hostname, port);
+			outStream = new ObjectOutputStream(socket.getOutputStream());
 		} catch (UnknownHostException e) {
 			System.err.println("ERROR: Don't know where to connect!!");
 			System.exit(1);
@@ -20,8 +24,10 @@ public class MazewarClient {
 			System.err.println("ERROR: Couldn't get I/O for the connection.");
 			System.exit(1);
 		}
+		
+		return socket;
 	}
-	
+
 	public boolean sendEvent(LocalClient client, ClientEvent clientevent) {
 		MazewarPacket payload = new MazewarPacket();
 		payload.clientName = client.getName();
@@ -36,12 +42,14 @@ public class MazewarClient {
 			payload.eventType = MazewarPacket.ACTION_TURN_RIGHT;
 		} else if (clientevent.equals(ClientEvent.fire)) {
 			payload.eventType = MazewarPacket.ACTION_FIRE_PROJECTILE;
+		} else if (clientevent.equals(ClientEvent.register)) {
+			payload.eventType = MazewarPacket.REGISTER;
 		} else {
 			return false;
 		}
 		
 		try {
-			out.writeObject(payload);
+			outStream.writeObject(payload);
 		} catch (IOException e) {
 			/* TODO how do we handle this? */
 			return false;
@@ -49,4 +57,5 @@ public class MazewarClient {
 			
 		return true;
 	}
+
 }

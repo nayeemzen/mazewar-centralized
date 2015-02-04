@@ -23,10 +23,18 @@ import javax.swing.JTextPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JOptionPane;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+
 import javax.swing.BorderFactory;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.Socket;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * The entry point and glue code for the game.  It also contains some helpful
@@ -88,6 +96,8 @@ public class Mazewar extends JFrame {
         private static String hostname;
         private static int port;
         private static MazewarClient client;
+        private ObjectInputStream inStream;
+        private LinkedBlockingQueue <MazewarPacket> eventQueue;
         
       
         /** 
@@ -158,8 +168,22 @@ public class Mazewar extends JFrame {
                 
                 if (isMultiplayer) {
                 	client = new MazewarClient();
-            		client.connect(hostname, port);
+                	Socket socket = client.connect(hostname, port);
             		guiClient.registerMazewarClient(client);
+
+        			try {
+						inStream = new ObjectInputStream(socket.getInputStream());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+        			
+        			eventQueue = new LinkedBlockingQueue<MazewarPacket>();
+        			
+        			// spawn new event producer thread (enqueue packets from server)
+        			(new Thread (new MazewarClientEventProducer(inStream, eventQueue))).start();
+        			// spawn new event consumer thread (dequeue packets onto GUIClient)
+        			(new Thread (new MazewarClientEventConsumer(guiClient, this, maze, eventQueue))).start();
+        			
                 } else {
                 	// Use braces to force constructors not to be called at the beginning of the
                     // constructor.

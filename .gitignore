@@ -25,3 +25,9 @@
 /MazewarPacket$action.class
 /MazewarPacket$Action.class
 /EventQueueListener.class
+/MazewarClient.class
+/MazewarClient$1.class
+/MazewarClientReceiver.class
+/MazewarClientPacketReceiver.class
+/MazewarClientEventProducer.class
+/MazewarClientEventConsumer.class
