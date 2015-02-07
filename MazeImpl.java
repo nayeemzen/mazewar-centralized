@@ -76,7 +76,7 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
                 // Build the maze starting at the corner
                 buildMaze(new Point(0,0));
 
-                thread.start();
+                // thread.start();
         }
        
         /** 
@@ -358,6 +358,30 @@ public class MazeImpl extends Maze implements Serializable, ClientListener, Runn
                                 // shouldn't happen
                         }
                 }
+        }
+        
+        public void missileTick() {
+        	System.out.println("tick.");
+        	Collection deadPrj = new HashSet();
+        	if(!projectileMap.isEmpty()) {
+                Iterator it = projectileMap.keySet().iterator();
+                synchronized(projectileMap) {
+                        while(it.hasNext()) {   
+                                Object o = it.next();
+                                assert(o instanceof Projectile);
+                                deadPrj.addAll(moveProjectile((Projectile)o));
+                        }               
+                        it = deadPrj.iterator();
+                        while(it.hasNext()) {
+                                Object o = it.next();
+                                assert(o instanceof Projectile);
+                                Projectile prj = (Projectile)o;
+                                projectileMap.remove(prj);
+                                clientFired.remove(prj.getOwner());
+                        }
+                        deadPrj.clear();
+                }
+        	}
         }
         
         /* Internals */

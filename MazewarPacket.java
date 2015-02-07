@@ -8,6 +8,7 @@ public class MazewarPacket implements Serializable {
 	public static final int ACTION_MOVE_UP    		= 103;
 	public static final int ACTION_MOVE_DOWN  		= 104;
 	public static final int ACTION_FIRE_PROJECTILE	= 105;
+	public static final int ACTION_MISSILE_TICK	= 106;
 	
 	/* Event to sync projectile movements between clients */
 	public static final int SYNC_PROJECTILE_MOVEMENT = 200;

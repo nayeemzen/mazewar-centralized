@@ -36,6 +36,8 @@ public class MazewarServer {
 			
 			/* Spawn thread for handling the new client connection */
 			(new Thread (new MazewarClientHandler(clientSocket, connectedClients, eventQueue))).start();
+			
+			(new Thread (new MissileTick(eventQueue))).start();
 		}
 	}
 	
