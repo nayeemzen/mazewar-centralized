@@ -85,8 +85,10 @@ public class MazewarClientHandler implements Runnable {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			broadcastClientShutdown();
 			e.printStackTrace();
-		} finally {
+		}
+		finally {
 			try {
 				clientSocket.close();
 				readStream.close();
@@ -95,6 +97,13 @@ public class MazewarClientHandler implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private void broadcastClientShutdown() {
+		MazewarPacket quitPacket = new MazewarPacket();
+		quitPacket.clientName = clientName;
+		quitPacket.eventType = MazewarPacket.QUIT;
+		eventQueue.add(quitPacket);
 	}
 	
 }
