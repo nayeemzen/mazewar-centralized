@@ -40,7 +40,6 @@ public class MazewarClientEventConsumer implements Runnable {
 		
 		if(!guiClient.isPlayable) return;
 		
-		assert(remoteClient != null);
 		boolean isLocalClient = mazewarPacket.clientName.equals(guiClient.getName());
 		
 		// TODO(Zen): Add firing events
