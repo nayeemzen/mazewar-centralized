@@ -78,6 +78,7 @@ public class MazewarClientEventConsumer implements Runnable {
 				System.out.println(remoteClient.getName() + "fired");
 				remoteClient.fire();
 			}
+			break;
 		case MazewarPacket.ACTION_MISSILE_TICK:
 			maze.missileTick();
 			break;
