@@ -35,6 +35,7 @@ public class ClientEvent {
         private static final int TURN_RIGHT = 3;
         private static final int FIRE = 4;
         private static final int REGISTER = 5;
+        private static final int QUIT = 6;
         
         /**
          * Default to 0, to be invalid.
@@ -45,7 +46,7 @@ public class ClientEvent {
          * Create a new {@link ClientEvent} from an internal representation.
          */
         private ClientEvent(int event) {
-                assert((event >= 0) && (event <= 5));
+                assert((event >= 0) && (event <= 6));
                 this.event = event;
         }
 
@@ -80,6 +81,8 @@ public class ClientEvent {
          * Generated when a {@link Client} registers.
          */
         public static final ClientEvent register = new ClientEvent(REGISTER);
+        
+        public static final ClientEvent quit = new ClientEvent(QUIT);
         
         
 }

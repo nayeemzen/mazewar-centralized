@@ -17,7 +17,6 @@ public class MazewarClientEventProducer implements Runnable {
 		try {
 			MazewarPacket packetFromClient = new MazewarPacket();
 			while ((packetFromClient = (MazewarPacket) readStream.readObject()) != null) {
-				System.out.println(packetFromClient.clientName);
 				eventQueue.add(packetFromClient);
 			}
 		} catch (ClassNotFoundException e) {

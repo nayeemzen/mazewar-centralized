@@ -44,7 +44,9 @@ public class MazewarClient {
 			payload.eventType = MazewarPacket.ACTION_FIRE_PROJECTILE;
 		} else if (clientevent.equals(ClientEvent.register)) {
 			payload.eventType = MazewarPacket.REGISTER;
-		} else {
+		} else if (clientevent.equals(ClientEvent.quit)) {
+			payload.eventType = MazewarPacket.QUIT;
+		} else {	
 			return false;
 		}
 		

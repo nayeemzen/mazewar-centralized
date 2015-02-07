@@ -82,6 +82,10 @@ public class MazewarClientEventConsumer implements Runnable {
 		case MazewarPacket.ACTION_MISSILE_TICK:
 			maze.missileTick();
 			break;
+		case MazewarPacket.QUIT:
+			assert(isLocalClient == false);
+			maze.removeClient(remoteClient);
+			break;
 		default:
 			System.err.println("Undefined event!");
 		}

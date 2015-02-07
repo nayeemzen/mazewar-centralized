@@ -80,8 +80,6 @@ public class MazewarClientHandler implements Runnable {
 		try {
 			MazewarPacket packetFromClient = new MazewarPacket();
 			while ((packetFromClient = (MazewarPacket) readStream.readObject()) != null) {
-				// TODO println for debug purposes only, remove later
-				System.out.println(packetFromClient.eventType);
 				handleReceivedPacket(packetFromClient);
 			}
 		} catch (ClassNotFoundException e) {
