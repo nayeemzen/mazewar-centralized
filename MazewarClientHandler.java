@@ -103,6 +103,7 @@ public class MazewarClientHandler implements Runnable {
 		MazewarPacket quitPacket = new MazewarPacket();
 		quitPacket.clientName = clientName;
 		quitPacket.eventType = MazewarPacket.QUIT;
+		connectedClients.remove(clientName);
 		eventQueue.add(quitPacket);
 	}
 	
