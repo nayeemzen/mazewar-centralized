@@ -11,9 +11,9 @@ Else you can also execute the following command:
 
 
 ##Running the server
-java MazewarServer <port>
+java MazewarServer < port > 
 
 ##Running the client
-java Mazewar <server_host> <server_port>
+java Mazewar < server_host > < server_port >
 
 
