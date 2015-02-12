@@ -12,16 +12,18 @@ public class EventQueueListener implements Runnable {
 	private ConcurrentHashMap <String, ObjectOutputStream> connectedClients;
 	private AtomicInteger sequenceNumber;
 	private final int MIN_CLIENTS = 4;
+	private boolean ready;
 	
 	EventQueueListener(LinkedBlockingQueue eventQueue, ConcurrentHashMap connectedClients) {
 		assert (eventQueue != null) && (connectedClients != null);
 		this.eventQueue = eventQueue;
 		this.connectedClients = connectedClients;
 		sequenceNumber = new AtomicInteger(0);
+		this.ready = false;
 	}
 	
 	public void broadcast(MazewarPacket packet) throws IOException {
-		 /* Tag packet with sequence number */
+		/* Tag packet with sequence number */
 		packet.sequenceNumber = sequenceNumber.incrementAndGet();
 		System.out.println("dequeing: " + packet.eventType + ", "
 				+ "sequence num: " + packet.sequenceNumber 
@@ -41,9 +43,17 @@ public class EventQueueListener implements Runnable {
 		/* Listen and broadcast indefinitely */
 		while(true) {
 			try {
+				if (connectedClients.size() == MIN_CLIENTS) {
+					ready = true;
+				} else if (connectedClients.size() == 0 && ready == true) {
+					ready = false;
+				}
+				
 				/* eventQueue.take() blocks if queue is empty */
-				if (connectedClients.size() < MIN_CLIENTS) 
+				if (ready == false) {
 					continue;
+				}
+				
 				broadcast(eventQueue.take());
 			} catch (InterruptedException e){
 				e.printStackTrace();

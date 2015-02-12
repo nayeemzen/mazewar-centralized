@@ -45,7 +45,7 @@ public class MazewarClientEventConsumer implements Runnable {
 		
 		boolean isLocalClient = mazewarPacket.clientName.equals(guiClient.getName());
 		
-		if (!isLocalClient && !connectedRemoteClients.containsKey(mazewarPacket.clientName)) {
+		if (!isLocalClient && !"server".equals(mazewarPacket.clientName) && !connectedRemoteClients.containsKey(mazewarPacket.clientName)) {
 			return;
 		} else {
 			remoteClient = connectedRemoteClients.get(mazewarPacket.clientName);
@@ -92,7 +92,13 @@ public class MazewarClientEventConsumer implements Runnable {
 			maze.missileTick();
 			break;
 		case MazewarPacket.QUIT:
-			Mazewar.quit();
+			assert(isLocalClient == false);
+			maze.removeClient(remoteClient);
+			connectedRemoteClients.remove(remoteClient.getName());
+			if (connectedRemoteClients.size() == 0) {
+				// No one else is playing anymore, quit the game.
+				Mazewar.quit();
+			}
 			break;
 		default:
 			System.err.println("Undefined event!");
