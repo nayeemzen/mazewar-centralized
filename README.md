@@ -16,4 +16,9 @@ java MazewarServer < port >
 ##Running the client
 java Mazewar < server_host > < server_port >
 
+##Playing the game
+- The game will not start unless 4 players are connected. 
+- Once the game has started, if a player quits the game the game will continue until only one player is left. 
+- If there is only one player remaining, the game will close.
+
 
