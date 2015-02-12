@@ -11,7 +11,7 @@ public class EventQueueListener implements Runnable {
 	private LinkedBlockingQueue <MazewarPacket> eventQueue;
 	private ConcurrentHashMap <String, ObjectOutputStream> connectedClients;
 	private AtomicInteger sequenceNumber;
-	private final int MIN_CLIENTS = 2;
+	private final int MIN_CLIENTS = 4;
 	
 	EventQueueListener(LinkedBlockingQueue eventQueue, ConcurrentHashMap connectedClients) {
 		assert (eventQueue != null) && (connectedClients != null);

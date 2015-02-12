@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
@@ -7,25 +8,27 @@ public class MazewarClientEventConsumer implements Runnable {
 	private GUIClient guiClient;
 	private LinkedBlockingQueue <MazewarPacket> eventQueue;
 	private MazeImpl maze;
-	private RemoteClient remoteClient;
+	private HashMap<String, RemoteClient> connectedRemoteClients;
 	
 	public MazewarClientEventConsumer(GUIClient guiClient,
 			Maze maze, LinkedBlockingQueue eventQueue) {
 		this.guiClient = guiClient;
 		this.eventQueue = eventQueue;
 		this.maze = (MazeImpl) maze;
-		remoteClient = null;
 		guiClient.isPlayable = false;
+		connectedRemoteClients = new HashMap<String, RemoteClient>();
 	}
 	
 	private void execute(MazewarPacket mazewarPacket) {
 		System.out.println("Consuming event: " + mazewarPacket.eventType + " From: " + mazewarPacket.clientName);
 		
+		RemoteClient remoteClient;
 		// TODO(Zen): Improve isPlayable logic
 		if (mazewarPacket.eventType == MazewarPacket.BEGIN) {
 			// Spawn new RemoteClient for opponents (ignore self)
 			if(!mazewarPacket.clientName.equals(guiClient.getName())) {
 				remoteClient = new RemoteClient(mazewarPacket.clientName);
+				connectedRemoteClients.put(remoteClient.getName(), remoteClient);
 	            maze.addClient(remoteClient);
 			} else { 
 				guiClient.isPlayable = true;
@@ -41,6 +44,13 @@ public class MazewarClientEventConsumer implements Runnable {
 		if(!guiClient.isPlayable) return;
 		
 		boolean isLocalClient = mazewarPacket.clientName.equals(guiClient.getName());
+		
+		if (!isLocalClient && !connectedRemoteClients.containsKey(mazewarPacket.clientName)) {
+			return;
+		} else {
+			remoteClient = connectedRemoteClients.get(mazewarPacket.clientName);
+		}
+		
 		
 		// TODO(Zen): Add firing events
 		switch(mazewarPacket.eventType) {
